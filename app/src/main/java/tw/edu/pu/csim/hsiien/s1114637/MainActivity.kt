@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +38,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
+
 import tw.edu.pu.csim.hsiien.s1114637.ui.theme.S1114637Theme
 
 class MainActivity : ComponentActivity() {
@@ -59,10 +66,79 @@ class MainActivity : ComponentActivity() {
 
 
 
+@Composable
+fun FirstScreen(navController: NavController){
+    var appear by remember { mutableStateOf(true) }
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.White),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(text = "瑪利亞基金會服務總覽", color = Color.Blue)
+
+        AnimatedVisibility(
+            visible = appear,
+
+            exit = fadeOut(
+                animationSpec = tween(durationMillis = 3000))
+        ) {
+
+            Image(
+                painter = painterResource(id = R.drawable.service),
+                contentDescription = "service",
+
+                )
+        }
+        Button(onClick = {
+            appear = false
+            navController.navigate("JumpSecond")
+        }) {
+            Text(text = "作者:資管系蔡譯嫺")
+        }
+    }
+}
+
+@Composable
+fun SecondScreen(navController: NavController) {
+    var appear by remember { mutableStateOf(true) }
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.White),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(text = "關於App作者", color = Color.Blue)
+
+        AnimatedVisibility(
+            visible = appear,
+            enter = fadeIn(
+                initialAlpha = 0.1f,
+                animationSpec = tween(durationMillis = 3000))
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.myself),
+                contentDescription = "service",
+
+                )
+        }
+
+        Button(onClick = {
+            appear = true
+            navController.navigate("JumpFirst")
+        }) {
+            Text(text = "服務總覽")
+        }
+
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Main() {
-    //val navController = rememberNavController()
+    val navController = rememberNavController()
     var showMenu by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
@@ -86,7 +162,7 @@ fun Main() {
                     DropdownMenuItem(
                         text = { Text("簡介") },
                         onClick = {
-                            //navController.navigate("JumpFirst")
+                            navController.navigate("JumpFirst")
                             showMenu = false
                         }
                     )
@@ -101,8 +177,13 @@ fun Main() {
                 }
             }
         )
-        Text(
-            text = "簡介", color = Color.Blue
-        )
+        NavHost(navController = navController, startDestination = "JumpFirst") {
+            composable("JumpFirst") {
+                FirstScreen(navController = navController)
+            }
+            composable("JumpSecond") {
+                SecondScreen(navController = navController)
+            }
+        }
     }
 }

@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import tw.edu.pu.csim.hsiien.s1114637.ui.theme.S1114637Theme
 
 class SecondActivity : ComponentActivity() {
@@ -55,7 +56,7 @@ class SecondActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Main3() {
-    //val navController = rememberNavController()
+    val navController = rememberNavController()
     val context = LocalContext.current
     var showMenu by remember { mutableStateOf(false) }
 
